@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Sederhana</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #96d9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .kalkulator {
+            background: #222;
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+        }
+
+        h2 {
+            color: hwb(172 47% 2%);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            height: 60px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 25px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .tombol {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            height: 55px;
+            font-size: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #f3d2fe;
+            cursor: pointer;
+        }
+
+        button:active {
+            background: #a5faea;
+        }
+
+        .hapus {
+            background: #ff5555;
+            color: white;
+        }
+
+        .operator {
+            background: orange;
+            color: white;
+        }
+
+        .hasil {
+            background: #2196f3;
+            color: white;
+            grid-row: span 2;
+            height: 118px;
+        }
+
+        .nol {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="kalkulator">
+
+        <h2>Kalkulator</h2>
+
+        <input type="text" id="display"
+        placeholder="0" readonly>
+
+        <div class="tombol">
+
+            <button class="hapus" data-value="C">C</button>
+            <button data-value="DEL">DEL</button>
+            <button class="operator" data-value="/">÷</button>
+            <button class="operator" data-value="*">×</button>
+
+            <button data-value="7">7</button>
+            <button data-value="8">8</button>
+            <button data-value="9">9</button>
+            <button class="operator" data-value="-">-</button>
+
+            <button data-value="4">4</button>
+            <button data-value="5">5</button>
+            <button data-value="6">6</button>
+            <button class="operator" data-value="+">+</button>
+
+            <button data-value="1">1</button>
+            <button data-value="2">2</button>
+            <button data-value="3">3</button>
+            <button class="hasil" data-value="=">=</button>
+
+            <button class="nol" data-value="0">0</button>
+            <button data-value=".">.</button>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        const display = document.getElementById("display");
+
+        const tombol = document.querySelectorAll(".tombol button");
+
+        tombol.forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                let nilai = this.getAttribute("data-value");
+
+                // Tombol C
+                if (nilai === "C") {
+                    display.value = "";
+                }
+
+                // Tombol DEL
+                else if (nilai === "DEL") {
+                    display.value = display.value.slice(0, -1);
+                }
+
+                // Tombol =
+                else if (nilai === "=") {
+
+                    try {
+
+                        let ekspresi = display.value;
+
+                        if (!/^[0-9+\-*/. ]+$/.test(ekspresi)) {
+                            throw new Error("Input salah");
+                        }
+
+                        let hasil = Function(
+                            '"use strict"; return (' + ekspresi + ')'
+                        )();
+
+                        if (!Number.isFinite(hasil)) {
+                            throw new Error("Hasil salah");
+                        }
+
+                        display.value = hasil;
+
+                    } catch (error) {
+                        display.value = "Error";
+                    }
+
+                }
+
+                // Tombol angka dan operator
+                else {
+
+                    if (display.value === "Error") {
+                        display.value = "";
+                    }
+
+                    display.value += nilai;
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
